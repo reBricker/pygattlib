@@ -132,7 +132,7 @@ class GATTRequester:
             Signals.OBJECT_PROPERTIES_CHANGED(path),
             partial(self._on_filter_notification, callback=callback, filter=filter))
         self._notify_ids[char_uuid] = notify_id
-        char.StartNotify()
+        char.StartNotify(timeout=200)
 
     def disable_notifications(self, char_uuid: str) -> None:
         char, path = self.get_characteristic(char_uuid)
@@ -140,7 +140,7 @@ class GATTRequester:
         notify_id = self._notify_ids.pop(char_uuid, None)
         if notify_id is not None:
             self._bluez.disconnect_signal(notify_id)
-        char.StopNotify()
+        char.StopNotify(timeout=200)
 
     def _on_filter_notification(self, changed: dict, invalid: list,
             callback: Callable, filter: list) -> None:
